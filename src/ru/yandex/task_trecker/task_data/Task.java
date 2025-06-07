@@ -1,4 +1,5 @@
 package ru.yandex.task_trecker.task_data;
+
 import ru.yandex.task_trecker.service.Status;
 
 import java.util.Objects;
@@ -25,6 +26,10 @@ public class Task {
 
     public Status getStatus() {
         return status;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setStatus(Status status) {

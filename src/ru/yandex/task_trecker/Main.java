@@ -8,6 +8,16 @@ import ru.yandex.task_trecker.task_data.Task;
 
 public class Main {
     public static void main(String[] args) {
+        /***
+         * !Предупреждаю!
+         *
+         * Код этого класса сделала нейросеть (Copilot)
+         *
+         * Мне было лень придумывать текст задачь для тестировкания.
+         *
+         */
+
+
         TaskManager manager = new TaskManager();
 
         // Создаем две обычные задачи
@@ -19,16 +29,16 @@ public class Main {
         // Создаем эпик с двумя подзадачами
         Epic epic1 = new Epic("Организация семейного праздника", "Подготовка к празднику");
         manager.createEpic(epic1);
-        SubTask subtask1 = new SubTask("Купить декорации", "Найти магазин", Status.NEW, epic1.getId());
-        SubTask subtask2 = new SubTask("Заказать торт", "Выбрать кондитера", Status.NEW, epic1.getId());
-        manager.createSubtask(subtask1);
-        manager.createSubtask(subtask2);
+        SubTask subtask1 = new SubTask("Купить декорации", "Найти магазин", Status.NEW);
+        SubTask subtask2 = new SubTask("Заказать торт", "Выбрать кондитера", Status.NEW);
+        manager.createSubtask(subtask1, 3);
+        manager.createSubtask(subtask2, 3);
 
         // Создаем эпик с одной подзадачей
         Epic epic2 = new Epic("Покупка квартиры", "Выбор и покупка квартиры");
         manager.createEpic(epic2);
-        SubTask subtask3 = new SubTask("Осмотр квартир", "Записаться на просмотры", Status.NEW, epic2.getId());
-        manager.createSubtask(subtask3);
+        SubTask subtask3 = new SubTask("Осмотр квартир", "Записаться на просмотры", Status.NEW);
+        manager.createSubtask(subtask3, 6);
 
         // Выводим текущие состояния задач
         System.out.println("----- Список обычных задач -----");
@@ -52,9 +62,8 @@ public class Main {
 
         // Для эпика 1 меняем статусы обеих подзадач для перехода в DONE
         subtask1.setStatus(Status.DONE);
-        manager.updateSubTask(subtask1);
         subtask2.setStatus(Status.DONE);
-        manager.updateSubTask(subtask2);
+        manager.updateEpicStatus(subtask1.getEpicId());
 
         // Для эпика 2 меняем статус подзадачи на IN_PROGRESS
         subtask3.setStatus(Status.IN_PROGRESS);
