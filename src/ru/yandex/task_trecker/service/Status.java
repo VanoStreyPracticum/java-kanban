@@ -1,4 +1,4 @@
-package ru.yandex.task_trecker;
+package ru.yandex.task_trecker.service;
 
 public enum Status {
     NEW,

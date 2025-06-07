@@ -1,4 +1,6 @@
-package ru.yandex.task_trecker;
+package ru.yandex.task_trecker.task_data;
+import ru.yandex.task_trecker.service.Status;
+
 import java.util.Objects;
 
 public class Task {

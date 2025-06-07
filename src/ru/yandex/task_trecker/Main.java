@@ -1,5 +1,11 @@
 package ru.yandex.task_trecker;
 
+import ru.yandex.task_trecker.service.Status;
+import ru.yandex.task_trecker.service.TaskManager;
+import ru.yandex.task_trecker.task_data.Epic;
+import ru.yandex.task_trecker.task_data.SubTask;
+import ru.yandex.task_trecker.task_data.Task;
+
 public class Main {
     public static void main(String[] args) {
         TaskManager manager = new TaskManager();
