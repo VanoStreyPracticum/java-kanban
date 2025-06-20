@@ -1,5 +1,6 @@
 package ru.yandex.task_trecker;
 
+import ru.yandex.task_trecker.service.Managers;
 import ru.yandex.task_trecker.service.Status;
 import ru.yandex.task_trecker.service.TaskManager;
 import ru.yandex.task_trecker.task_data.Epic;
@@ -8,17 +9,14 @@ import ru.yandex.task_trecker.task_data.Task;
 
 public class Main {
     public static void main(String[] args) {
-        /***
-         * !Предупреждаю!
-         *
-         * Код этого класса сделала нейросеть (Copilot)
-         *
-         * Мне было лень придумывать текст задачь для тестировкания.
-         *
+        /**
+         *      Первую версию кода ФЗ 5 спринта я отправил случайно(
+         *      Случайно нажал на кнопку, прошу прошения!
+         *      Можете пожалуйста не считать первую версию кода, первой попыткой?
          */
 
 
-        TaskManager manager = new TaskManager();
+        TaskManager manager = Managers.getDefault();
 
         // Создаем две обычные задачи
         Task task1 = new Task("Переезд", "Перевозка вещей в новый дом", Status.NEW);
@@ -40,21 +38,8 @@ public class Main {
         SubTask subtask3 = new SubTask("Осмотр квартир", "Записаться на просмотры", Status.NEW);
         manager.createSubtask(subtask3, 6);
 
-        // Выводим текущие состояния задач
-        System.out.println("----- Список обычных задач -----");
-        for (Task t : manager.getTasks()) {
-            System.out.println(t);
-        }
 
-        System.out.println("\n----- Список эпиков -----");
-        for (Epic e : manager.getEpics()) {
-            System.out.println(e);
-        }
-
-        System.out.println("\n----- Список подзадач -----");
-        for (SubTask s : manager.getSubTasks()) {
-            System.out.println(s);
-        }
+        printAllTasks(manager);
 
         // Изменяем статусы
         task1.setStatus(Status.IN_PROGRESS);
@@ -69,40 +54,35 @@ public class Main {
         subtask3.setStatus(Status.IN_PROGRESS);
         manager.updateSubTask(subtask3);
 
-        System.out.println("\n----- После обновления статусов -----");
-        System.out.println("Обычные задачи:");
-        for (Task t : manager.getTasks()) {
-            System.out.println(t);
-        }
-
-        System.out.println("\nЭпики:");
-        for (Epic e : manager.getEpics()) {
-            System.out.println(e);
-        }
-
-        System.out.println("\nПодзадачи:");
-        for (SubTask s : manager.getSubTasks()) {
-            System.out.println(s);
-        }
+        printAllTasks(manager);
 
         // Удаляем одну обычную задачу и один эпик (а с эпиком автоматически удалятся его подзадачи)
         manager.deleteTaskPerId(task2.getId());
         manager.deleteEpicPerId(epic2.getId());
 
-        System.out.println("\n----- После удаления обычной задачи и эпика -----");
-        System.out.println("Обычные задачи:");
-        for (Task t : manager.getTasks()) {
-            System.out.println(t);
-        }
+        printAllTasks(manager);
+    }
 
-        System.out.println("\nЭпики:");
-        for (Epic e : manager.getEpics()) {
-            System.out.println(e);
+    private static void printAllTasks(TaskManager manager) {
+        System.out.println("Задачи:");
+        for (Task task : manager.getTasks()) {
+            System.out.println(task);
         }
+        System.out.println("Эпики:");
+        for (Task epic : manager.getEpics()) {
+            System.out.println(epic);
 
-        System.out.println("\nПодзадачи:");
-        for (SubTask s : manager.getSubTasks()) {
-            System.out.println(s);
+            for (Task task : manager.getSubtasksOfEpic(epic.getId())) {
+                System.out.println("--> " + task);
+            }
+        }
+        System.out.println("Подзадачи:");
+        for (Task subtask : manager.getSubTasks()) {
+            System.out.println(subtask);
+        }
+        System.out.println("История:");
+        for (Task task : Managers.getDefaultHistory().getHistory()) {
+            System.out.println(task);
         }
     }
 }
