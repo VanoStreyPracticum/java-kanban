@@ -1,68 +1,77 @@
 package ru.yandex.task_trecker.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.yandex.task_trecker.task_data.Epic;
 import ru.yandex.task_trecker.task_data.SubTask;
 import ru.yandex.task_trecker.task_data.Task;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.yandex.task_trecker.service.Status.NEW;
 
+@DisplayName("Тесты для InMemoryTaskManager")
 class InMemoryTaskManagerTest {
 
     private TaskManager taskManager;
 
     @BeforeEach
-    void setup() {
-        taskManager = new InMemoryTaskManager();
+    void setUp() {
+        taskManager = new InMemoryTaskManager(new InMemoryHistoryManager());
     }
 
     @Test
-    void shouldCreateAndRetrieveTask() {
+    @DisplayName("Должен создать и вернуть задачу по ID")
+    void testShouldCreateAndRetrieveTask_WhenValid_ThenCorrectResult() {
         Task task = new Task("Task", "Desc", NEW);
+
         taskManager.createTask(task);
-        Task fetched = taskManager.getTaskPerId(task.getId());
-        assertEquals(task, fetched);
+        Task retrieved = taskManager.getTaskPerId(task.getId());
+
+        assertEquals(task, retrieved);
     }
 
     @Test
-    void shouldNotAllowSubtaskToBeItsOwnEpic() {
+    @DisplayName("Не должен позволять подзадаче быть своим же эпиком")
+    void testShouldNotAllowSubtaskToBeItsOwnEpic_WhenIdSame_ThenThrow() {
         Epic epic = new Epic("Epic", "Self-linked");
-        SubTask sub = new SubTask("Sub", "Loop", Status.NEW);
-
+        SubTask sub = new SubTask("Sub", "Loop", NEW);
         epic.setId(100);
         sub.setId(100);
 
-        taskManager.createEpic(epic); // Важно: сначала создать эпик
+        taskManager.createEpic(epic);
 
         assertThrows(IllegalArgumentException.class, () -> {
-            taskManager.createSubtask(sub, sub.getId()); // Тут должен сработать запрет
+            taskManager.createSubtask(sub, sub.getId());
         });
     }
 
-
     @Test
-    void shouldNotAllowEpicToContainItself() {
+    @DisplayName("Подзадача не может иметь тот же ID, что и эпик")
+    void testShouldNotAllowEpicToContainItself_WhenSubTaskIdMatches_ThenThrow() {
+        // Given
         Epic epic = new Epic("Epic", "Self-ref");
         taskManager.createEpic(epic);
-
-        SubTask sub = new SubTask("Bad", "Self", Status.NEW);
+        SubTask sub = new SubTask("Bad", "Self", NEW);
         sub.setId(epic.getId());
 
+        // Then
         assertThrows(IllegalArgumentException.class, () -> {
             taskManager.createSubtask(sub, epic.getId());
         });
     }
 
-
     @Test
-    void taskShouldRemainUnchangedAfterAddition() {
+    @DisplayName("Проверка, что задача сохраняется с корректными параметрами")
+    void testTaskShouldRemainUnchangedAfterAddition_WhenRetrieved_ThenDataMatches() {
+        // Given
         Task task = new Task("Orig", "Copy", NEW);
+
+        // When
         taskManager.createTask(task);
         Task retrieved = taskManager.getTaskPerId(task.getId());
+
+        // Then
         assertEquals(task.getName(), retrieved.getName());
         assertEquals(task.getDescription(), retrieved.getDescription());
         assertEquals(task.getStatus(), retrieved.getStatus());

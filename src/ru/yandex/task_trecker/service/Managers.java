@@ -1,10 +1,13 @@
 package ru.yandex.task_trecker.service;
 
 public class Managers {
-    public static HistoryManager getDefaultHistory(){
-        return new InMemoryHistoryManager();
+    private final HistoryManager historyManager = new InMemoryHistoryManager();
+    private final TaskManager taskManager = new InMemoryTaskManager(historyManager);
+
+    public HistoryManager getDefaultHistory(){
+        return historyManager;
     }
-    public static TaskManager getDefault(){
-        return new InMemoryTaskManager();
+    public TaskManager getDefault(){
+        return taskManager;
     }
 }
