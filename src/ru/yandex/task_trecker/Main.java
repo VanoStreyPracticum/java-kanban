@@ -5,11 +5,6 @@ import ru.yandex.task_trecker.task_data.*;
 
 public class Main {
     public static void main(String[] args) {
-        /**
-         *      Первую версию кода ФЗ 5 спринта я отправил случайно(
-         *      Случайно нажал на кнопку, прошу прошения!
-         *      Можете пожалуйста не считать первую версию кода, первой попыткой?
-         */
         Managers managers = new Managers();
 
         // Создаем две обычные задачи

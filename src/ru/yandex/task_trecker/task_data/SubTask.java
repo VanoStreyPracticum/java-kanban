@@ -5,6 +5,13 @@ import ru.yandex.task_trecker.service.Status;
 import java.util.Objects;
 
 public class SubTask extends Task {
+    /**
+     * Наличие этого поля epicId оправдана упрощением логики программы.(В результате меньше кода)
+     *
+     * К тому же в ТЗ 4 спринта было сказанно что epic и subTask должны знать id друг друга.
+     *
+     */
+
     private int epicId;
 
     public SubTask(String name, String description, Status status) {
