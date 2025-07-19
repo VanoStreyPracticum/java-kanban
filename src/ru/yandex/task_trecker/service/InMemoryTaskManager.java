@@ -5,7 +5,6 @@ import ru.yandex.task_trecker.task_data.Subtask;
 import ru.yandex.task_trecker.task_data.Task;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private final HistoryManager historyManager;
