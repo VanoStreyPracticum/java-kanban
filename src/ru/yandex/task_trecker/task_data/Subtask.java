@@ -4,7 +4,7 @@ import ru.yandex.task_trecker.service.Status;
 
 import java.util.Objects;
 
-public class SubTask extends Task {
+public class Subtask extends Task {
     /**
      * Наличие этого поля epicId оправдана упрощением логики программы.(В результате меньше кода)
      *
@@ -14,7 +14,7 @@ public class SubTask extends Task {
 
     private int epicId;
 
-    public SubTask(String name, String description, Status status) {
+    public Subtask(String name, String description, Status status) {
         super(name, description, status);
     }
 
@@ -31,7 +31,7 @@ public class SubTask extends Task {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        SubTask subTask = (SubTask) o;
+        Subtask subTask = (Subtask) o;
         return epicId == subTask.epicId;
     }
 

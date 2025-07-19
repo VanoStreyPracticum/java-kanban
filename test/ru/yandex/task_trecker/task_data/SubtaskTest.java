@@ -7,7 +7,7 @@ import ru.yandex.task_trecker.service.Status;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Тесты для SubTask")
-class SubTaskTest {
+class SubtaskTest {
 
     private static final String NAME = "Sub";
     private static final String DESCRIPTION = "Desc";
@@ -16,8 +16,8 @@ class SubTaskTest {
     @Test
     @DisplayName("Подзадачи считаются равными, если совпадают ID")
     void testSubTasksAreEqual_WhenIdsMatch_ThenEqualsTrue() {
-        SubTask sub1 = new SubTask(NAME, DESCRIPTION, Status.NEW);
-        SubTask sub2 = new SubTask(NAME, DESCRIPTION, Status.NEW);
+        Subtask sub1 = new Subtask(NAME, DESCRIPTION, Status.NEW);
+        Subtask sub2 = new Subtask(NAME, DESCRIPTION, Status.NEW);
         sub1.setId(ID);
         sub2.setId(ID);
 

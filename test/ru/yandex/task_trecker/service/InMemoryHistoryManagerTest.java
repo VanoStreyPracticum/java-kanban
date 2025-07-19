@@ -31,6 +31,7 @@ class InMemoryHistoryManagerTest {
         task.setId(TASK_ID);
 
         historyManager.add(task);
+        historyManager.add(task);
 
         List<Task> history = historyManager.getHistory();
         assertEquals(1, history.size());

@@ -1,7 +1,7 @@
 package ru.yandex.task_trecker.service;
 
 import ru.yandex.task_trecker.task_data.Epic;
-import ru.yandex.task_trecker.task_data.SubTask;
+import ru.yandex.task_trecker.task_data.Subtask;
 import ru.yandex.task_trecker.task_data.Task;
 
 import java.util.ArrayList;
@@ -11,11 +11,11 @@ public interface TaskManager {
 
     ArrayList<Epic> getEpics();
 
-    ArrayList<SubTask> getSubTasks();
+    ArrayList<Subtask> getSubtasks();
 
     void deleteTasks();
 
-    void deleteSubTasks();
+    void deleteSubtasks();
 
     void deleteEpics();
 
@@ -23,27 +23,27 @@ public interface TaskManager {
 
     Epic getEpicPerId(int id);
 
-    SubTask getSubTaskPerId(int id);
+    Subtask getSubTaskPerId(int id);
 
     void createTask(Task task);
 
     void createEpic(Epic epic);
 
-    void createSubtask(SubTask subtask, int epicId);
+    void createSubtask(Subtask subtask, int epicId);
 
     void updateTask(Task updateTask);
 
     void updateEpic(Epic updateEpic);
 
-    void updateSubTask(SubTask updateSubTask);
+    void updateSubtask(Subtask updateSubtask);
 
     void deleteTaskPerId(int id);
 
     void deleteEpicPerId(int id);
 
-    void deleteSubTaskPerId(int id);
+    void deleteSubtaskPerId(int id);
 
-    ArrayList<SubTask> getSubtasksOfEpic(int epicId);
+    ArrayList<Subtask> getSubtasksOfEpic(int epicId);
 
     void updateEpicStatus(int epicId);
 }
