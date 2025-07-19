@@ -7,9 +7,8 @@ import java.util.Objects;
 public class Subtask extends Task {
     /**
      * Наличие этого поля epicId оправдана упрощением логики программы.(В результате меньше кода)
-     *
+     * <p>
      * К тому же в ТЗ 4 спринта было сказанно что epic и subTask должны знать id друг друга.
-     *
      */
 
     private int epicId;
