@@ -2,10 +2,7 @@ package ru.yandex.task_trecker.service;
 
 import ru.yandex.task_trecker.task_data.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class InMemoryHistoryManager implements HistoryManager {
