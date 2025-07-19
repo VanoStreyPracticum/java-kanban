@@ -7,6 +7,7 @@ public class Managers {
     public HistoryManager getDefaultHistory() {
         return historyManager;
     }
+
     public TaskManager getDefault() {
         return taskManager;
     }
