@@ -32,8 +32,8 @@ class EpicTest {
     void testAddSubtaskIdsToEpic_WhenCalled_ThenStoredCorrectly() {
         Epic epic = new Epic("Container", "Tracks subtasks");
 
-        epic.addSubTaskId(101);
-        epic.addSubTaskId(202);
+        epic.addSubtaskId(101);
+        epic.addSubtaskId(202);
 
         assertEquals(2, epic.getSubtaskIds().size());
         assertTrue(epic.getSubtaskIds().contains(101));

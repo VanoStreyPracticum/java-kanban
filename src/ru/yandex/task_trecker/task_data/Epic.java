@@ -3,20 +3,29 @@ package ru.yandex.task_trecker.task_data;
 import ru.yandex.task_trecker.service.Status;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
-    private final ArrayList<Integer> subtaskIds = new ArrayList<>();
+    private final List<Integer> subtaskIds = new ArrayList<>();
 
     public Epic(String name, String description) {
         super(name, description, Status.NEW);
     }
 
-    public ArrayList<Integer> getSubtaskIds() {
+    public List<Integer> getSubtaskIds() {
         return subtaskIds;
     }
 
-    public void addSubTaskId(int id) {
+    public void addSubtaskId(int id) {
         subtaskIds.add(id);
+    }
+
+    public void removeSubtaskId(int id) {
+        subtaskIds.remove((Integer) id);
+    }
+
+    public void clearSubtaskIds() {
+        subtaskIds.clear();
     }
 
     @Override
@@ -26,7 +35,7 @@ public class Epic extends Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
-                ", subTaskIds= " + subtaskIds +
+                ", subTaskIds=" + subtaskIds +
                 '}';
     }
 }

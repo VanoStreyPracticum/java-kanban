@@ -24,7 +24,9 @@ public class Task {
         return name;
     }
 
-    public String getDescription(){return description;}
+    public String getDescription() {
+        return description;
+    }
 
     public Status getStatus() {
         return status;

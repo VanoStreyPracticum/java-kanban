@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.yandex.task_trecker.task_data.Epic;
-import ru.yandex.task_trecker.task_data.SubTask;
+import ru.yandex.task_trecker.task_data.Subtask;
 import ru.yandex.task_trecker.task_data.Task;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +35,7 @@ class InMemoryTaskManagerTest {
     @DisplayName("Не должен позволять подзадаче быть своим же эпиком")
     void testShouldNotAllowSubtaskToBeItsOwnEpic_WhenIdSame_ThenThrow() {
         Epic epic = new Epic("Epic", "Self-linked");
-        SubTask sub = new SubTask("Sub", "Loop", NEW);
+        Subtask sub = new Subtask("Sub", "Loop", NEW);
         epic.setId(100);
         sub.setId(100);
 
@@ -52,7 +52,7 @@ class InMemoryTaskManagerTest {
         // Given
         Epic epic = new Epic("Epic", "Self-ref");
         taskManager.createEpic(epic);
-        SubTask sub = new SubTask("Bad", "Self", NEW);
+        Subtask sub = new Subtask("Bad", "Self", NEW);
         sub.setId(epic.getId());
 
         // Then
