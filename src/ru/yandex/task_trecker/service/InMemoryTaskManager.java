@@ -18,11 +18,11 @@ public class InMemoryTaskManager implements TaskManager {
         this.historyManager = historyManager;
     }
 
-    public int getIdCounter(){
+    public int getIdCounter() {
         return idCounter;
     }
 
-    public void setIdCounter(int idCounter){
+    public void setIdCounter(int idCounter) {
         this.idCounter = idCounter;
     }
 
