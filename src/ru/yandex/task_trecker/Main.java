@@ -3,7 +3,6 @@ package ru.yandex.task_trecker;
 import ru.yandex.task_trecker.service.*;
 import ru.yandex.task_trecker.task_data.*;
 
-import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
