@@ -1,10 +1,9 @@
 package ru.yandex.task_trecker.service;
 
-import ru.yandex.task_trecker.task_data.Epic;
-import ru.yandex.task_trecker.task_data.Subtask;
-import ru.yandex.task_trecker.task_data.Task;
+import ru.yandex.task_trecker.task_data.*;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private final HistoryManager historyManager;
@@ -13,6 +12,8 @@ public class InMemoryTaskManager implements TaskManager {
     private final ArrayList<Epic> epics = new ArrayList<>();
     private final ArrayList<Subtask> subtasks = new ArrayList<>();
     private int idCounter = 0;
+
+    private final TreeMap<LocalDateTime, Task> prioritizedTasks = new TreeMap<>();
 
     public InMemoryTaskManager(HistoryManager historyManager) {
         this.historyManager = historyManager;
@@ -106,6 +107,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void createTask(Task task) {
         task.setId(++idCounter);
         tasks.add(task);
+        addTaskToPriorityMap(task);
     }
 
     @Override
@@ -113,6 +115,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setId(++idCounter);
         epics.add(epic);
         updateEpicStatus(epic.getId());
+        addTaskToPriorityMap(epic);
     }
 
     @Override
@@ -135,13 +138,16 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.add(subtask);
         epic.addSubtaskId(subtask.getId());
         updateEpicStatus(epicId);
+        addTaskToPriorityMap(subtask);
     }
 
     @Override
     public void updateTask(Task updateTask) {
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).getId() == updateTask.getId()) {
+                removeTaskFromPriorityMap(tasks.get(i));
                 tasks.set(i, updateTask);
+                addTaskToPriorityMap(updateTask);
                 return;
             }
         }
@@ -151,19 +157,24 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateSubtask(Subtask subtask) {
         for (int i = 0; i < subtasks.size(); i++) {
             if (subtasks.get(i).getId() == subtask.getId()) {
+                removeTaskFromPriorityMap(subtasks.get(i));
                 subtasks.set(i, subtask);
                 updateEpicStatus(subtask.getEpicId());
+                addTaskToPriorityMap(subtask);
                 return;
             }
         }
+
     }
 
     @Override
     public void updateEpic(Epic epic) {
         for (int i = 0; i < epics.size(); i++) {
             if (epics.get(i).getId() == epic.getId()) {
+                removeTaskFromPriorityMap(epics.get(i));
                 epics.set(i, epic);
                 updateEpicStatus(epic.getId());
+                addTaskToPriorityMap(epic);
                 return;
             }
         }
@@ -190,19 +201,29 @@ public class InMemoryTaskManager implements TaskManager {
 
     public void updateEpicStatus(int epicId) {
         Epic epic = getEpicPerId(epicId);
+
         if (epic == null) return;
+        if (epic.getSubtaskIds().size() != 0) epic.setStartTime(LocalDateTime.now());
 
         int done = 0;
         int newCount = 0;
+        long duration = 0L;
+
         for (Integer subId : epic.getSubtaskIds()) {
             Subtask sub = findSubTask(subId);
             if (sub != null) {
+                duration += sub.getDuration().toMinutes();
+                if (epic.getStartTime().isAfter(sub.getStartTime())) {
+                    epic.setStartTime(sub.getStartTime());
+                }
                 switch (sub.getStatus()) {
                     case DONE -> done++;
                     case NEW -> newCount++;
                 }
             }
         }
+
+        epic.setDuration(duration);
 
         if (epic.getSubtaskIds().isEmpty()) {
             epic.setStatus(Status.NEW);
@@ -253,5 +274,18 @@ public class InMemoryTaskManager implements TaskManager {
             subtasks.removeIf(s -> s.getId() == id);
             historyManager.remove(id);
         }
+    }
+
+    private void addTaskToPriorityMap(Task task) {
+        prioritizedTasks.put(task.getStartTime(), task);
+    }
+
+    private void removeTaskFromPriorityMap(Task task) {
+        prioritizedTasks.remove(task.getStartTime());
+    }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks.values());
     }
 }

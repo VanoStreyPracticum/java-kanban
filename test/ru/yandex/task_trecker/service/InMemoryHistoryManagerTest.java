@@ -27,7 +27,7 @@ class InMemoryHistoryManagerTest {
     @Test
     @DisplayName("Должен добавить задачу в историю при вызове add()")
     void testShouldAddTaskToHistory_WhenTaskAdded_ThenHistoryContainsIt() {
-        Task task = new Task(TASK_NAME, TASK_DESCRIPTION, NEW);
+        Task task = new Task(TASK_NAME, TASK_DESCRIPTION, NEW, 1);
         task.setId(TASK_ID);
 
         historyManager.add(task);

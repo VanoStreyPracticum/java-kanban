@@ -3,14 +3,16 @@ package ru.yandex.task_trecker.service;
 import ru.yandex.task_trecker.task_data.*;
 
 import java.io.*;
-import java.nio.file.Files;
 import java.util.*;
+import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private final File file;
 
-    private static final String CSV_HEADER = "id,type,name,status,description,epic";
+    private static final String CSV_HEADER = "id,type,name,description,status,duration,startTime,epic";
 
     public FileBackedTaskManager(HistoryManager historyManager, File file) {
         super(historyManager);
@@ -51,8 +53,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             line.append(TaskType.TASK);
         }
         line.append(",").append(task.getName())
-                .append(",").append(task.getStatus())
                 .append(",").append(task.getDescription())
+                .append(",").append(task.getStatus())
+                .append(",").append(task.getDuration())
+                .append(",").append(task.getStartTime())
                 .append(",");
 
         if (task instanceof Subtask) {
@@ -192,45 +196,56 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public Task fromString(String value) {
         String[] fields = value.split(",", -1);
-        if (fields.length < CSV_HEADER.split(",").length) {
-            throw new IllegalArgumentException("Строка CSV неполная: " + value);
+        if (fields.length != CSV_HEADER.split(",").length) {
+            throw new IllegalArgumentException("Некорректное количество полей в строке CSV: " + value);
         }
 
-        int id = Integer.parseInt(fields[0]);
-        TaskType type = TaskType.valueOf(fields[1]);
-        String name = fields[2];
-        Status status = Status.valueOf(fields[3]);
-        String description = fields[4];
-        String epicField = fields[5];
+        try {
+            int id = Integer.parseInt(fields[0]);
+            TaskType type = TaskType.valueOf(fields[1]);
+            String name = fields[2];
+            String description = fields[3];
+            Status status = Status.valueOf(fields[4]);
+            long duration = Long.parseLong(fields[5]);
+            LocalDateTime startTime = LocalDateTime.parse(fields[6], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            String epicField = fields[7];
 
-        switch (type) {
-            case TASK:
-                return createTaskInstance(id, name, status, description);
-            case EPIC:
-                return createEpicInstance(id, name, status, description);
-            case SUBTASK:
-                return createSubtaskInstance(id, name, status, description, epicField);
-            default:
-                throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
+            switch (type) {
+                case TASK:
+                    return createTaskInstance(id, name, status, description, duration, startTime);
+                case EPIC:
+                    return createEpicInstance(id, name, status, description, duration, startTime);
+                case SUBTASK:
+                    return createSubtaskInstance(id, name, status, description, duration, startTime, epicField);
+                default:
+                    throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
+            }
+        } catch (Exception e) {
+            throw new ManagerSaveException("Ошибка парсинга строки CSV: " + value, e);
         }
     }
 
-    private Task createTaskInstance(int id, String name, Status status, String description) {
-        Task task = new Task(name, description, status);
+
+    private Task createTaskInstance(int id, String name, Status status, String description, long duration, LocalDateTime startTime) {
+        Task task = new Task(name, description, status, duration);
         task.setId(id);
+        task.setStartTime(startTime);
         return task;
     }
 
-    private Epic createEpicInstance(int id, String name, Status status, String description) {
+    private Epic createEpicInstance(int id, String name, Status status, String description, long duration, LocalDateTime startTime) {
         Epic epic = new Epic(name, description);
         epic.setId(id);
         epic.setStatus(status);
+        epic.setStartTime(startTime);
+        epic.setDuration(duration);
         return epic;
     }
 
-    private Subtask createSubtaskInstance(int id, String name, Status status, String description, String epicField) {
-        Subtask subtask = new Subtask(name, description, status);
+    private Subtask createSubtaskInstance(int id, String name, Status status, String description, long duration, LocalDateTime startTime, String epicField) {
+        Subtask subtask = new Subtask(name, description, status, duration);
         subtask.setId(id);
+        subtask.setStartTime(startTime);
         if (!epicField.isEmpty()) {
             subtask.setEpicId(Integer.parseInt(epicField));
         } else {

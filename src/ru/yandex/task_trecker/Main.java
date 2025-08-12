@@ -5,26 +5,26 @@ import ru.yandex.task_trecker.task_data.*;
 
 
 public class Main {
-    public static void main(String[] args) {
+    static void main(String[] args) {
         Managers managers = new Managers();
         // Создаем две обычные задачи
-        Task task1 = new Task("Переезд", "Перевозка вещей в новый дом", Status.NEW);
-        Task task2 = new Task("Покупка еды", "Составить список покупок", Status.NEW);
+        Task task1 = new Task("Переезд", "Перевозка вещей в новый дом", Status.NEW, 10);
+        Task task2 = new Task("Покупка еды", "Составить список покупок", Status.NEW, 10);
         managers.getDefault().createTask(task1);
         managers.getDefault().createTask(task2);
 
         // Создаем эпик с двумя подзадачами
         Epic epic1 = new Epic("Организация семейного праздника", "Подготовка к празднику");
         managers.getDefault().createEpic(epic1);
-        Subtask subtask1 = new Subtask("Купить декорации", "Найти магазин", Status.NEW);
-        Subtask subtask2 = new Subtask("Заказать торт", "Выбрать кондитера", Status.NEW);
+        Subtask subtask1 = new Subtask("Купить декорации", "Найти магазин", Status.NEW, 10);
+        Subtask subtask2 = new Subtask("Заказать торт", "Выбрать кондитера", Status.NEW, 10);
         managers.getDefault().createSubtask(subtask1, 3);
         managers.getDefault().createSubtask(subtask2, 3);
 
         // Создаем эпик с одной подзадачей
         Epic epic2 = new Epic("Покупка квартиры", "Выбор и покупка квартиры");
         managers.getDefault().createEpic(epic2);
-        Subtask subtask3 = new Subtask("Осмотр квартир", "Записаться на просмотры", Status.NEW);
+        Subtask subtask3 = new Subtask("Осмотр квартир", "Записаться на просмотры", Status.NEW, 10);
         managers.getDefault().createSubtask(subtask3, 6);
 
 
@@ -71,6 +71,10 @@ public class Main {
         }
         System.out.println("История:");
         for (Task task : managers.getDefaultHistory().getHistory()) {
+            System.out.println(task);
+        }
+        System.out.println("Приоритет:");
+        for (Task task : managers.getDefault().getPrioritizedTasks()){
             System.out.println(task);
         }
     }

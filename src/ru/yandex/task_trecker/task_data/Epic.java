@@ -2,14 +2,13 @@ package ru.yandex.task_trecker.task_data;
 
 import ru.yandex.task_trecker.service.Status;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class Epic extends Task {
     private final List<Integer> subtaskIds = new ArrayList<>();
 
     public Epic(String name, String description) {
-        super(name, description, Status.NEW);
+        super(name, description, Status.NEW, 0);
     }
 
     public List<Integer> getSubtaskIds() {
@@ -29,13 +28,28 @@ public class Epic extends Task {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subtaskIds, epic.subtaskIds);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subtaskIds);
+    }
+
+    @Override
     public String toString() {
         return "Epic{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
-                ", subTaskIds=" + subtaskIds +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", subtaskIds=" + subtaskIds +
                 '}';
     }
 }

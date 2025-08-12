@@ -1,10 +1,8 @@
 package ru.yandex.task_trecker.service;
 
-import ru.yandex.task_trecker.task_data.Epic;
-import ru.yandex.task_trecker.task_data.Subtask;
-import ru.yandex.task_trecker.task_data.Task;
+import ru.yandex.task_trecker.task_data.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public interface TaskManager {
     ArrayList<Task> getTasks();
@@ -46,4 +44,6 @@ public interface TaskManager {
     ArrayList<Subtask> getSubtasksOfEpic(int epicId);
 
     void updateEpicStatus(int epicId);
+
+    List<Task> getPrioritizedTasks();
 }

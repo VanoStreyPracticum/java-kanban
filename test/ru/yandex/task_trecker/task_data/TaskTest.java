@@ -16,11 +16,11 @@ class TaskTest {
     @Test
     @DisplayName("Задачи считаются равными, если совпадают все поля")
     void testTasksAreEqual_WhenFieldsMatch_ThenEqualsTrue() {
-        Task t1 = new Task(NAME, DESCRIPTION, Status.NEW);
-        Task t2 = new Task(NAME, DESCRIPTION, Status.NEW);
+        Task t1 = new Task(NAME, DESCRIPTION, Status.NEW, 1);
+        Task t2 = new Task(NAME, DESCRIPTION, Status.NEW, 1);
         t1.setId(ID);
         t2.setId(ID);
-
+        t1.setStartTime(t2.getStartTime());
         assertEquals(t1, t2);
     }
 }
