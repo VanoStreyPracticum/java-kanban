@@ -3,7 +3,7 @@ package ru.yandex.task_trecker.task_data;
 import ru.yandex.task_trecker.service.Status;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class Task {
@@ -12,17 +12,16 @@ public class Task {
     protected String description;
     protected Status status;
     protected long duration;
-    protected LocalDateTime startTime;
+    protected LocalTime startTime;
 
     public Task(String name, String description, Status status, long duration) {
         this.name = name;
         this.description = description;
         this.status = status;
         this.duration = duration;
-        startTime = LocalDateTime.now();
     }
 
-    public LocalDateTime getEndTime(){
+    public LocalTime getEndTime() {
         return startTime.plusMinutes(duration);
     }
 
@@ -42,11 +41,11 @@ public class Task {
         return status;
     }
 
-    public Duration getDuration(){
+    public Duration getDuration() {
         return Duration.ofMinutes(duration);
     }
 
-    public LocalDateTime getStartTime(){
+    public LocalTime getStartTime() {
         return startTime;
     }
 
@@ -58,12 +57,16 @@ public class Task {
         this.status = status;
     }
 
-    public void setDuration(long duration){
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 
-    public void setStartTime(LocalDateTime startTime){
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
+    }
+
+    public boolean isOverlapping(Task other) {
+        return (this.getStartTime().isBefore(other.getEndTime()) && this.getEndTime().isAfter(other.getStartTime()));
     }
 
     @Override
@@ -85,7 +88,7 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
-                ", duration=" + duration +
+                ", duration=" + Duration.ofMinutes(duration) +
                 ", startTime=" + startTime +
                 '}';
     }

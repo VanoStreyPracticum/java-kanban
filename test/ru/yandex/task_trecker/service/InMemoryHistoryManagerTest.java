@@ -27,14 +27,34 @@ class InMemoryHistoryManagerTest {
     @Test
     @DisplayName("Должен добавить задачу в историю при вызове add()")
     void testShouldAddTaskToHistory_WhenTaskAdded_ThenHistoryContainsIt() {
-        Task task = new Task(TASK_NAME, TASK_DESCRIPTION, NEW, 1);
-        task.setId(TASK_ID);
+        Task task = new Task("Task", "Description", Status.NEW, 1);
+        task.setId(1);
 
         historyManager.add(task);
-        historyManager.add(task);
-
         List<Task> history = historyManager.getHistory();
-        assertEquals(1, history.size());
-        assertEquals(task, history.get(0));
+
+        assertEquals(1, history.size(), "History should contain the task after adding");
+        assertTrue(history.contains(task), "History should contain the task added");
+    }
+
+    @Test
+    @DisplayName("Должен правильно удалять задачи из истории")
+    void testShouldRemoveTaskFromHistory_WhenTaskRemoved_ThenHistoryDoesNotContainIt() {
+        Task task = new Task("Task", "Description", Status.NEW, 1);
+        task.setId(1);
+
+        historyManager.add(task);
+        historyManager.remove(1);
+        List<Task> history = historyManager.getHistory();
+
+        assertFalse(history.contains(task), "History should not contain the task after removal");
+    }
+
+    @Test
+    @DisplayName("Должен обрабатывать исключения при добавлении задачи")
+    void testShouldThrowException_WhenAddNullTask_ThenThrow() {
+        assertThrows(NullPointerException.class, () -> {
+            historyManager.add(null);
+        });
     }
 }

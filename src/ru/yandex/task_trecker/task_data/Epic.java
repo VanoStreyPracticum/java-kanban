@@ -2,6 +2,7 @@ package ru.yandex.task_trecker.task_data;
 
 import ru.yandex.task_trecker.service.Status;
 
+import java.time.Duration;
 import java.util.*;
 
 public class Epic extends Task {
@@ -47,7 +48,7 @@ public class Epic extends Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
-                ", duration=" + duration +
+                ", duration=" + Duration.ofMinutes(duration) +
                 ", startTime=" + startTime +
                 ", subtaskIds=" + subtaskIds +
                 '}';

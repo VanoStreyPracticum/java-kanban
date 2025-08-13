@@ -12,7 +12,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (task == null) return;
+        if (task == null) {
+            throw new NullPointerException("Задача не может быть null");
+        }
         remove(task.getId());
         linkLast(task);
     }

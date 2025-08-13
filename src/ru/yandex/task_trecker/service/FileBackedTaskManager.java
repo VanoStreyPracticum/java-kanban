@@ -5,7 +5,7 @@ import ru.yandex.task_trecker.task_data.*;
 import java.io.*;
 import java.util.*;
 import java.nio.file.Files;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -61,8 +61,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         if (task instanceof Subtask) {
             line.append(((Subtask) task).getEpicId());
-        } else {
-            line.append("");
         }
         return line.toString();
     }
@@ -150,7 +148,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             List<String> lines = Files.lines(file.toPath()).toList();
 
-            if (lines.isEmpty() || !lines.get(0).equals(CSV_HEADER)) {
+            if (lines.isEmpty() || !lines.getFirst().equals(CSV_HEADER)) {
                 throw new ManagerSaveException("Некорректный формат файла");
             }
 
@@ -207,33 +205,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String description = fields[3];
             Status status = Status.valueOf(fields[4]);
             long duration = Long.parseLong(fields[5]);
-            LocalDateTime startTime = LocalDateTime.parse(fields[6], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            LocalTime startTime = LocalTime.parse(fields[6], DateTimeFormatter.ofPattern("HH:mm:ss"));
             String epicField = fields[7];
 
-            switch (type) {
-                case TASK:
-                    return createTaskInstance(id, name, status, description, duration, startTime);
-                case EPIC:
-                    return createEpicInstance(id, name, status, description, duration, startTime);
-                case SUBTASK:
-                    return createSubtaskInstance(id, name, status, description, duration, startTime, epicField);
-                default:
-                    throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
-            }
+            return switch (type) {
+                case TASK -> createTaskInstance(id, name, status, description, duration, startTime);
+                case EPIC -> createEpicInstance(id, name, status, description, duration, startTime);
+                case SUBTASK -> createSubtaskInstance(id, name, status, description, duration, startTime, epicField);
+                default -> throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
+            };
         } catch (Exception e) {
             throw new ManagerSaveException("Ошибка парсинга строки CSV: " + value, e);
         }
     }
 
 
-    private Task createTaskInstance(int id, String name, Status status, String description, long duration, LocalDateTime startTime) {
+    private Task createTaskInstance(int id, String name, Status status, String description, long duration, LocalTime startTime) {
         Task task = new Task(name, description, status, duration);
         task.setId(id);
         task.setStartTime(startTime);
         return task;
     }
 
-    private Epic createEpicInstance(int id, String name, Status status, String description, long duration, LocalDateTime startTime) {
+    private Epic createEpicInstance(int id, String name, Status status, String description, long duration, LocalTime startTime) {
         Epic epic = new Epic(name, description);
         epic.setId(id);
         epic.setStatus(status);
@@ -242,7 +236,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return epic;
     }
 
-    private Subtask createSubtaskInstance(int id, String name, Status status, String description, long duration, LocalDateTime startTime, String epicField) {
+    private Subtask createSubtaskInstance(int id, String name, Status status, String description, long duration, LocalTime startTime, String epicField) {
         Subtask subtask = new Subtask(name, description, status, duration);
         subtask.setId(id);
         subtask.setStartTime(startTime);
