@@ -1,5 +1,6 @@
 package ru.yandex.task_trecker.service;
 
+import ru.yandex.task_trecker.exceptions.ManagerSaveException;
 import ru.yandex.task_trecker.task_data.*;
 
 import java.io.*;
@@ -7,6 +8,7 @@ import java.util.*;
 import java.nio.file.Files;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Stream;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -145,10 +147,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             return manager;
         }
 
-        try {
-            List<String> lines = Files.lines(file.toPath()).toList();
+        try (Stream<String> linesStream = Files.lines(file.toPath())) {
+            List<String> lines = linesStream.toList();
 
-            if (lines.isEmpty() || !lines.getFirst().equals(CSV_HEADER)) {
+            if (lines.isEmpty() || !lines.get(0).equals(CSV_HEADER)) {
                 throw new ManagerSaveException("Некорректный формат файла");
             }
 
@@ -191,6 +193,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
         return manager;
     }
+
 
     public Task fromString(String value) {
         String[] fields = value.split(",", -1);

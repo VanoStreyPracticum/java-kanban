@@ -26,8 +26,8 @@ public class Main {
         subtask1.setStartTime(addTime());
         Subtask subtask2 = new Subtask("Заказать торт", "Выбрать кондитера", Status.NEW, 10);
         subtask2.setStartTime(addTime());
-        managers.getDefault().createSubtask(subtask1, 3);
-        managers.getDefault().createSubtask(subtask2, 3);
+        managers.getDefault().createSubtask(subtask1, epic1.getId());
+        managers.getDefault().createSubtask(subtask2, epic1.getId());
 
         // Создаем эпик с одной подзадачей
         Epic epic2 = new Epic("Покупка квартиры", "Выбор и покупка квартиры");
@@ -35,7 +35,7 @@ public class Main {
         managers.getDefault().createEpic(epic2);
         Subtask subtask3 = new Subtask("Осмотр квартир", "Записаться на просмотры", Status.NEW, 10);
         subtask3.setStartTime(addTime());
-        managers.getDefault().createSubtask(subtask3, 6);
+        managers.getDefault().createSubtask(subtask3, epic2.getId());
 
         printAllTasks(managers);
 
@@ -50,7 +50,7 @@ public class Main {
 
         // Для эпика 2 меняем статус подзадачи на IN_PROGRESS
         subtask3.setStatus(Status.IN_PROGRESS);
-        managers.getDefault().updateSubtask(subtask3);
+        managers.getDefault().updateEpicStatus(subtask3.getEpicId());
 
         printAllTasks(managers);
 

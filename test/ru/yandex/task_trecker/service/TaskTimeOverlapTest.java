@@ -6,6 +6,7 @@ import ru.yandex.task_trecker.task_data.Task;
 
 import java.time.LocalTime;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Тесты для пересечения временных интервалов")
@@ -20,7 +21,7 @@ class TaskTimeOverlapTest {
         Task task2 = new Task("Task 2", "Description", Status.NEW, 1);
         task2.setStartTime(LocalTime.of(1, 10));
 
-        assertTrue(!task1.isOverlapping(task2), "Задачи не должны пересекаться");
+        assertFalse(task1.isOverlapping(task2), "Задачи не должны пересекаться");
     }
 }
 

@@ -8,16 +8,11 @@ import ru.yandex.task_trecker.task_data.Task;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.yandex.task_trecker.service.Status.NEW;
 
 @DisplayName("Тесты для InMemoryHistoryManager")
 class InMemoryHistoryManagerTest {
 
     private HistoryManager historyManager;
-
-    private static final String TASK_NAME = "История";
-    private static final String TASK_DESCRIPTION = "Проверка добавления";
-    private static final int TASK_ID = 1;
 
     @BeforeEach
     void setUp() {
