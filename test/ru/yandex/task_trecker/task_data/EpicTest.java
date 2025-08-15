@@ -13,9 +13,9 @@ class EpicTest {
     void testEpicsAreEqual_WhenFieldsMatch_ThenEqualsTrue() {
         Epic epic1 = new Epic("Epic", "Desc");
         Epic epic2 = new Epic("Epic", "Desc");
-        epic1.setId(10);
-        epic2.setId(10);
-
+        epic1.setId(1);
+        epic2.setId(1);
+        epic1.setStartTime(epic2.getStartTime());
         assertEquals(epic1, epic2);
     }
 
