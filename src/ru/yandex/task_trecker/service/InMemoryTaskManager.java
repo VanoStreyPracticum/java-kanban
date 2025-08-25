@@ -165,9 +165,6 @@ public class InMemoryTaskManager implements TaskManager {
                 .filter(st -> st.getId() == subtask.getId())
                 .findFirst()
                 .ifPresent(existingSubtask -> {
-                    if (checkOverlapsExcludingSelf(subtask, existingSubtask)) {
-                        throw new IllegalArgumentException("Новый Subtask пересекается по времени с другой задачей");
-                    }
                     removeTaskFromPriorityMap(existingSubtask);
                     subtasks.set(subtasks.indexOf(existingSubtask), subtask);
                     updateEpicStatus(subtask.getEpicId());
