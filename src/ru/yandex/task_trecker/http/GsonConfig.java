@@ -2,7 +2,6 @@ package ru.yandex.task_trecker.http;
 
 import com.google.gson.*;
 import java.lang.reflect.Type;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
