@@ -80,7 +80,7 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
             sendText(exchange, gson.toJson(task));
         } else {
             manager.getDefault().createTask(task);
-            sendCreated(exchange, gson.toJson(task));
+            sendCreated(exchange);
         }
     }
 

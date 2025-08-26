@@ -3,6 +3,7 @@ package ru.yandex.task_trecker.http;
 import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import ru.yandex.task_trecker.exceptions.OverlappingTaskException;
 import ru.yandex.task_trecker.service.Managers;
 import ru.yandex.task_trecker.task_data.Subtask;
 
@@ -37,6 +38,8 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
                 default:
                     sendServerError(exchange, new UnsupportedOperationException("Unsupported HTTP method"));
             }
+        } catch (OverlappingTaskException e) {
+            sendHasOverlaps(exchange, e);
         } catch (Exception e) {
             sendServerError(exchange, e);
         }
@@ -76,7 +79,7 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
                 subtask.setId(id);
                 subtask.setEpicId(existing.getEpicId());
                 manager.getDefault().updateSubtask(subtask);
-                sendCreated(exchange, gson.toJson(subtask));
+                sendCreated(exchange);
             } else {
                 sendNotFound(exchange);
             }
@@ -86,7 +89,7 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
                 return;
             }
             manager.getDefault().createSubtask(subtask, subtask.getEpicId());
-            sendCreated(exchange, gson.toJson(subtask));
+            sendCreated(exchange);
         }
     }
 
