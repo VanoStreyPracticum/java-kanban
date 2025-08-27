@@ -1,5 +1,6 @@
 package ru.yandex.task_trecker.service;
 
+import ru.yandex.task_trecker.exceptions.OverlappingTaskException;
 import ru.yandex.task_trecker.task_data.*;
 
 import java.time.LocalTime;
@@ -99,7 +100,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void createTask(Task task) {
         if (checkOverlaps(task)) {
-            throw new IllegalArgumentException("Task пересекается по времени с существующей");
+            throw new OverlappingTaskException("Task пересекается по времени с существующей");
         }
         task.setId(++idCounter);
         tasks.add(task);
@@ -109,7 +110,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void createEpic(Epic epic) {
         if (checkOverlaps(epic)) {
-            throw new IllegalArgumentException("Epic пересекается по времени с существующей");
+            throw new OverlappingTaskException("Epic пересекается по времени с существующей");
         }
         epic.setId(++idCounter);
         epics.add(epic);
@@ -133,7 +134,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         if (checkOverlaps(subtask)) {
-            throw new IllegalArgumentException("Subtask пересекается по времени с существующей");
+            throw new OverlappingTaskException("Subtask пересекается по времени с существующей");
         }
 
         subtask.setId(++idCounter);
@@ -151,7 +152,7 @@ public class InMemoryTaskManager implements TaskManager {
                 .findFirst()
                 .ifPresent(existingTask -> {
                     if (checkOverlapsExcludingSelf(updateTask, existingTask)) {
-                        throw new IllegalArgumentException("Новый Task пересекается по времени с другой задачей");
+                        throw new OverlappingTaskException("Новый Task пересекается по времени с другой задачей");
                     }
                     removeTaskFromPriorityMap(existingTask);
                     tasks.set(tasks.indexOf(existingTask), updateTask);
@@ -165,13 +166,16 @@ public class InMemoryTaskManager implements TaskManager {
                 .filter(st -> st.getId() == subtask.getId())
                 .findFirst()
                 .ifPresent(existingSubtask -> {
+                    Epic epic = getEpicPerId(subtask.getEpicId());
+                    removeTaskFromPriorityMap(epic);
                     if (checkOverlapsExcludingSelf(subtask, existingSubtask)) {
-                        throw new IllegalArgumentException("Новый Subtask пересекается по времени с другой задачей");
+                        throw new OverlappingTaskException("Новый SubTask пересекается по времени с другой задачей");
                     }
                     removeTaskFromPriorityMap(existingSubtask);
                     subtasks.set(subtasks.indexOf(existingSubtask), subtask);
                     updateEpicStatus(subtask.getEpicId());
                     addTaskToPriorityMap(subtask);
+                    addTaskToPriorityMap(epic);
                 });
     }
 
@@ -182,7 +186,7 @@ public class InMemoryTaskManager implements TaskManager {
                 .findFirst()
                 .ifPresent(existingEpic -> {
                     if (checkOverlapsExcludingSelf(epic, existingEpic)) {
-                        throw new IllegalArgumentException("Новый Epic пересекается по времени с другой задачей");
+                        throw new OverlappingTaskException("Новый Epic пересекается по времени с другой задачей");
                     }
                     removeTaskFromPriorityMap(existingEpic);
                     epics.set(epics.indexOf(existingEpic), epic);

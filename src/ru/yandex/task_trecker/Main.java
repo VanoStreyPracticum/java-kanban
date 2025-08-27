@@ -1,15 +1,18 @@
 package ru.yandex.task_trecker;
 
+import ru.yandex.task_trecker.http.HttpTaskServer;
 import ru.yandex.task_trecker.service.*;
 import ru.yandex.task_trecker.task_data.*;
 
+import java.io.IOException;
 import java.time.LocalTime;
 
 public class Main {
     static LocalTime updatedTime = LocalTime.of(9, 0);
 
-    public static void main(String[] args) {
+    static void main(String[] args) throws IOException {
         Managers managers = new Managers();
+
         // Создаем две обычные задачи
         Task task1 = new Task("Переезд", "Перевозка вещей в новый дом", Status.NEW, 50);
         task1.setStartTime(addTime()); // Устанавливаем время начала для задачи
@@ -59,6 +62,8 @@ public class Main {
         managers.getDefault().deleteEpicPerId(epic2.getId());
 
         printAllTasks(managers);
+        HttpTaskServer server = new HttpTaskServer(managers);
+        server.start();
     }
 
     private static LocalTime addTime() {
